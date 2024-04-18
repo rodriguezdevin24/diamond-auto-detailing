@@ -1,15 +1,27 @@
 //appointmentController.js
 
 const Appointment = require("../models/Appointment");
+const TimeSlot = require("../models/TimeSlot");
 
 
 //Create a new appointment
 
 exports.createAppointment = async (req, res) => {
+    const { timeSlotId, ...appointmentDetails } = req.body;
   try {
-    const appointment = new Appointment(req.body);
+    const timeSlot = await TimeSlot.findById(timeSlotId);
+    if (!timeSlot || timeSlot.isBooked) {
+        return res.status(400).json({ message: "Time slot not available"});
+    }
+
+    timeSlot.isBooked = true;
+    await timeSlot.save();
+
+
+    const appointment = new Appointment({...appointmentDetails, timeSlot: timeSlotId});
     await appointment.save();
     res.status(201).json(appointment);
+
   } catch (error) {
     res
       .status(400)

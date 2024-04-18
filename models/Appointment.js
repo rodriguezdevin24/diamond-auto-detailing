@@ -19,14 +19,6 @@ const appointmentSchema = new mongoose.Schema({
         ref: 'TimeSlot',
         required: true,
     },
-    calendlyEventUri: {
-        type: String,
-        required: false
-    },
-    date: {
-        type: Date,
-        required: true
-    },
     status: {
         type: String, 
         enum: ['pending', 'confirmed', 'completed', 'cancelled'],
