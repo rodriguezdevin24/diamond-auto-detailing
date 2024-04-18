@@ -11,13 +11,13 @@ const SALT_WORK_FACTOR = 10;
 
 exports.createUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-    const newUser = new User ({ name, email, password });
+        const { name, email, password, role } = req.body;
+    const newUser = new User ({ name, email, password, role });
     await newUser.save();
 
     res.status(201).json({
         message: "User created successfully!",
-        user: { id: newUser._id, name: newUser.name, email: newUser.email}
+        user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role}
     });
     } catch(error) {
         res.status(400).json({ message: "Error creating user", error: error.message});
@@ -71,7 +71,7 @@ exports.updateUser =  async (req, res) => {
         Object.assign(user, updateData);
         await user.save(); //trigges pre save middleware for hashing
 
-        res.json({ message: 'User updated successfully!', user: { id: user._id, name: user.name, email: user.email } });
+        res.json({ message: 'User updated successfully!', user: { id: user._id, name: user.name, email: user.email, role: user.role } });
 
 } catch (error) {
     res.status(500).json({ message: "Error updating user", error: error.message });
