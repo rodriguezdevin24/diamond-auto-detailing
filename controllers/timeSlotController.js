@@ -96,9 +96,3 @@ exports.deleteTimeSlot = async(req, res) => {
 
 };
 
-
-
-
-// fasdf
-// asdfa
-// asdf

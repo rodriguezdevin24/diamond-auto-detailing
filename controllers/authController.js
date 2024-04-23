@@ -3,9 +3,11 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const passport = require('passport');
 
 require("dotenv").config();
 
+//JWT logic
 //Login logic
 
 exports.login = async (req, res) => {
@@ -46,7 +48,7 @@ exports.login = async (req, res) => {
 };
 
 
-//Refresh token logic
+// Refresh token logic
 
 exports.refreshToken = async (req, res) => {
   const { refreshToken } = req.body;
@@ -90,4 +92,26 @@ exports.logout = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error during logout" });
   }
+};
+
+
+
+//OAuth logic
+
+
+//Handles the redirection to Googles OAuth server
+exports.redirectToGoogle = (req, res) => {
+  passport.authenticate('google', { scope: ['profile', 'email'] }) (req, res);
+};
+
+
+//Handles the callback from Google OAuth 
+exports.googleCallback = (req, res) => {
+  passport.authenticate('google', (err, user, info) => {
+    if (err || !user ) {
+      return res.status(400).json({ message: 'Authentication failed', errors: err });
+    }
+    //proceed to generate a token or manage the session
+    res.redirect('/api/auth/success')
+    })(req, res);
 };
