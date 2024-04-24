@@ -19,7 +19,11 @@ const userSchema = new mongoose.Schema({
     },
     password: { 
         type: String, 
-        required: [true, 'Password is required']
+        required: [function() { return this.isLocal;}, 'Password is required']
+    },
+    isLocal: {
+        type: Boolean,
+        default: true
     },
     role: {
         type: String,
@@ -30,6 +34,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    googleId: String,
+    
 }, { timestamps: true });
 
 userSchema.pre('save', async function(next) {

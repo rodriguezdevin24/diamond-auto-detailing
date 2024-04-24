@@ -5,14 +5,12 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
+
 // Enable CORS for all requests
 
 
 //Load env variables
 dotenv.config();
-
-//Database config
-require ('./db/connection')
 
 // Route handlers
 const passportSetup = require('./middleware/passportSetup');
@@ -24,7 +22,12 @@ const testRoute = require('./routes/testRoute');
 const timeSlotRoute = require('./routes/timeSlotRoute')
 
 const app = express();
+require ('./db/connection')
 const PORT = process.env.port || 3200;
+
+
+//Database config
+
 
 app.use(cors());
 

@@ -106,12 +106,20 @@ exports.redirectToGoogle = (req, res) => {
 
 
 //Handles the callback from Google OAuth 
-exports.googleCallback = (req, res) => {
+exports.googleCallback = (req, res, next) => {
   passport.authenticate('google', (err, user, info) => {
-    if (err || !user ) {
-      return res.status(400).json({ message: 'Authentication failed', errors: err });
+    if (err ) {
+      return next(err);
     }
-    //proceed to generate a token or manage the session
-    res.redirect('/api/auth/success')
-    })(req, res);
+    if (!user ) {
+      return res.status(400).json({ message: 'Authentication failed' });
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+          return next(err);
+      }
+      // Redirect to a success page or dashboard as needed
+      return res.redirect('/api/auth/success');
+  });
+})(req, res, next);
 };

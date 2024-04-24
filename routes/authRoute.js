@@ -20,7 +20,9 @@ router.get('/google', authController.redirectToGoogle);
 
 router.get('/google/callback', authController.googleCallback);
 
-
+router.get('/success', (req, res) => {
+    res.send('Successfully logged in');
+});
 
 module.exports = router;
 
