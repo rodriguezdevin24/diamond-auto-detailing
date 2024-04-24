@@ -3,10 +3,13 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const passport = require('passport');
 
 require("dotenv").config();
 
+//JWT logic
 //Login logic
+
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -44,24 +47,8 @@ exports.login = async (req, res) => {
   }
 };
 
-//Logout logic
 
-exports.logout = async (req, res) => {
-  const { userId } = req.body;
-
-  
-  try {
-    //Find the user and invalidate the refresh token
-    await User.findByIdAndUpdate(userId, { refreshToken: "" });
-
-    res.status(200).json({ message: "Logout successful!" });
-  } catch (error) {
-    res.status(500).json({ message: "Error during logout" });
-  }
-};
-
-
-//Refresh token logic
+// Refresh token logic
 
 exports.refreshToken = async (req, res) => {
   const { refreshToken } = req.body;
@@ -87,4 +74,52 @@ exports.refreshToken = async (req, res) => {
   } catch (error) {
     res.status(403).json({ message: "Invalid or expired refresh token" });
   }
+};
+
+
+
+//Logout logic
+
+exports.logout = async (req, res) => {
+  const { userId } = req.body;
+
+
+  try {
+    //Find the user and invalidate the refresh token
+    await User.findByIdAndUpdate(userId, { refreshToken: "" });
+
+    res.status(200).json({ message: "Logout successful!" });
+  } catch (error) {
+    res.status(500).json({ message: "Error during logout" });
+  }
+};
+
+
+
+//OAuth logic
+
+
+//Handles the redirection to Googles OAuth server
+exports.redirectToGoogle = (req, res) => {
+  passport.authenticate('google', { scope: ['profile', 'email'] }) (req, res);
+};
+
+
+//Handles the callback from Google OAuth 
+exports.googleCallback = (req, res, next) => {
+  passport.authenticate('google', (err, user, info) => {
+    if (err ) {
+      return next(err);
+    }
+    if (!user ) {
+      return res.status(400).json({ message: 'Authentication failed' });
+    }
+    req.logIn(user, function(err) {
+      if (err) {
+          return next(err);
+      }
+      // Redirect to a success page or dashboard as needed
+      return res.redirect('/api/auth/success');
+  });
+})(req, res, next);
 };

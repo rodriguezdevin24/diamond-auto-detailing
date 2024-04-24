@@ -68,7 +68,7 @@ exports.deletePackage = async(req, res) => {
         const packageId = req.params.id;
         const deletedPackage = await Package.findByIdAndDelete(packageId);
         if(!deletedPackage) {
-            return res.status(400).json({ message: 'Package not found'})
+            return res.status(404).json({ message: 'Package not found'})
         }
         res.json({ message: "Package deleted successfully"})
     } catch (error) {
