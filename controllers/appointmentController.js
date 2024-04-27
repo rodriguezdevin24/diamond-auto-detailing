@@ -2,6 +2,7 @@
 
 const Appointment = require("../models/Appointment");
 const TimeSlot = require("../models/TimeSlot");
+const { sendEmailToOwner } = require("../services/emailService")
 
 
 //Create a new appointment
@@ -20,6 +21,10 @@ exports.createAppointment = async (req, res) => {
 
     const appointment = new Appointment({...appointmentDetails, timeSlot: timeSlotId});
     await appointment.save();
+
+    //Send an email notifcation
+    await sendEmailToOwner(appointment)
+
     res.status(201).json(appointment);
 
   } catch (error) {

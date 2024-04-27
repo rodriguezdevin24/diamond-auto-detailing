@@ -1,5 +1,7 @@
 //server.js
 
+//Change secure to true lower down for app session when ready for prod
+
 const express = require('express');
 const dotenv = require('dotenv');
 const passport = require('passport');
@@ -39,6 +41,12 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        secure: false, // make sure to set to true when actually using prod. VVV
+        // secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 60 * 24
+    }
 }));
 
 //Initialize passport and sessions for authentication
