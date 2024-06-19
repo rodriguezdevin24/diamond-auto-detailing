@@ -49,7 +49,7 @@ exports.getPackage = async(req, res) => {
     }
 }
 
-// Update user by Id
+// Update package by Id
 
 exports.updatePackage = async (req, res) => {
     try {

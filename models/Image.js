@@ -8,7 +8,7 @@ const imageSchema = new Mongoose.schema({
 
   after: {
     type: String,
-    required: true,
+    required: false,
   },
 }, {timeStamp: true});
 

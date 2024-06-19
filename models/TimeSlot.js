@@ -15,8 +15,18 @@ const timeSlotSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
+    },
+    status: {
+        type: String,
+        enum: [ 'pending', 'confirmed', "available"],
+        default: 'available'
+    },
+    appointment: { 
+        type: String,
+        ref: 'Appointment',
+        default: null
     }
-})
+});
 
 const TimeSlot = mongoose.model('TimeSlot', timeSlotSchema);
 

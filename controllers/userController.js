@@ -24,7 +24,7 @@ exports.createUser = async (req, res) => {
     }
 };
 
-// get all users 
+//Get all users 
 
 exports.getUsers = async (req, res) => {
     try {
@@ -78,7 +78,7 @@ exports.updateUser =  async (req, res) => {
 }
 };
 
-//delete user 
+//Delete user 
 
 exports.deleteUser = async (req, res) => {
     try {

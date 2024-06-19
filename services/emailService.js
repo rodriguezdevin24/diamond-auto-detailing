@@ -9,25 +9,51 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const sendEmailToOwner = async (appointment) => {
+//Function to send different types of emails
+exports.sendEmail = async (emailType, appointment) => {
+    let subject, htmlContent;
+
+    switch (emailType) {
+        case 'newAppointment':
+            subject = "New Appointment Booked";
+            htmlContent = `
+            <h1> Appointment Confirmation</h1>
+            <p> Your appointment on ${appointment.date} at ${appointment.time} has been successfully booked. </p>
+            `;
+            break; 
+            case 'statusUpdate':
+                subject = "Appointment Status Updated";
+                htmlContent = `
+                <h1> Appointment Status Change</h1>
+                <p> Your appointment status has been updated to ${appointment.status}</p>
+                `;
+                break;
+                case 'cancellation':
+                    subject = 'Appointment Cancelled';
+                    htmlContent = `
+                    <h1> Appointment Cancellation</h1>
+                    <p> Your appointment on ${appointment.date} has been cancelled. </p>
+                    `;
+                    break;
+                    default: 
+                    throw new Error('Invalid email type provided')
+    }
     const mailOptions = {
         from: process.env.GMAIL_USERNAME,
-        to: 'owner@example.com',
-        subject: "New Appointment Booking",
-        html: `<h1>New Appointment Details</h1>
-        <p><strong>User:</strong>${appointment.user.name}</p>
-        <p><strong>Package:</strong>${appointment.package.name}</p>
-        <p><strong>Date:</strong> ${appointment.timeSlot.startTime.toDateString()}</p>
-        <p><strong>Time:</strong> ${appointment.timeSlot.startTime.toLocaleTimeString()} - ${appointment.timeSlot.endTime.toLocaleTimeString()} </p> 
-        <p><strong>Status:</strong> ${appointment.status}</p>  
-        <a href="http://localhost:3200/appointments/${appontment._id}/confirm">Confirm Appointment</a>        
-        <a href="http://localhost:3200/appointments/${appontment._id}/cancel">Cancel Appointment</a> `        
+        to: appointment.customerEmail,//This might be the wrong variable
+        subject: subject,
+        html: htmlContent     
     };
-    const info = await transporter.sendMail(mailOptions);
-    console.log('message sent: %s', info.messageId);
+    
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log("Email sent successfully");
+    } catch (error) {
+        console.error('Error sending email:', error);
+    }
 };
 
 
-module.exports = {
-    sendEmailToOwner
-};
+// const sendEmailToOwner = async (appointment) => {
+    
+

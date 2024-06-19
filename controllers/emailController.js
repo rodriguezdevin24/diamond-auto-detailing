@@ -10,6 +10,7 @@ exports.sendNewAppointmentEmail = async (appointment) => {
     }
 };
 
+
 exports.sendStatusUpdateEmail = async (appointment) => {
     try {
         console.log('Status update email sent');
@@ -18,6 +19,7 @@ exports.sendStatusUpdateEmail = async (appointment) => {
     }
 };
 
+
 exports.sendCancellationEmail = async (appointmentId) => {
     try {
         await sendCancellationEmail(appointmentId);
@@ -25,6 +27,6 @@ exports.sendCancellationEmail = async (appointmentId) => {
     } catch (error) {
         console.error('Failed to send cancellation email:', error);
     }
-    
-}
+};
+
 
