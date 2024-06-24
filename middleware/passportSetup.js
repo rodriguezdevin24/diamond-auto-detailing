@@ -1,8 +1,9 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const User = require('../models/User');
+const FacebookStrategy = require("passport-facebook")
 
-//Configure Google Oauth strategy with your Google client ID and client secret
+//Google OAuth Strategy
 
 passport.use(new GoogleStrategy ({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -33,20 +34,48 @@ async (accessToken, refreshToken, profile, done) => {
 }
 ));
 
-//Serialize user into the session
-passport.serializeUser(( user, done) => {
-    done(null, user.id);
-});
+// // Facebook OAuth Strategy //
 
-// Deserialize user from the sessions
+// passport.use(new FacebookStrategy({
+//     clientID: process.env.FACEBOOK_APP_ID,
+//     clientSecret: process.env.FACEBOOK_APP_SECRET,
+//     callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+//     profileFields: ['id', 'emails', 'name']
+// },
+//     async (accessToken, refreshToken, profile, done) => {
+//         try {
+//             let user = await User.findOne({ facebookId: profile.id });
+//             if (user) {
+//                 return done(null, user);
+//             } else {
+//                 user = await User.create({
+//                     facebookId: profile.id,
+//                     name: profile.displayName,
+//                     email: profile.emails[0].value,
+//                     isLocal:false
+//                 });
+//                 return done(null, user);
+//             }
+//         } catch (error) {
+//             return done(error, null);
+//         }
+//     }));
 
-passport.deserializeUser(async(id, done) => {
-    try {
-        const user = await User.findById(id);
-        done(null, user);
-    } catch (err) {
-        done(err, null);
-        }
-});
+
+// //Serialize user into the session
+// passport.serializeUser(( user, done) => {
+//     done(null, user.id);
+// });
+
+// // Deserialize user from the sessions
+
+// passport.deserializeUser(async(id, done) => {
+//     try {
+//         const user = await User.findById(id);
+//         done(null, user);
+//     } catch (err) {
+//         done(err, null);
+//         }
+// });
     
-
+// module.exports = passport;

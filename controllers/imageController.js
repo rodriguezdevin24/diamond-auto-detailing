@@ -1,4 +1,4 @@
-// image model 
+// image controller
 
 const Image = require('../models/Package');
 

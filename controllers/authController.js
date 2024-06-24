@@ -96,8 +96,11 @@ exports.logout = async (req, res) => {
 
 
 
-//OAuth logic
+//====OAuth logic=====//
 
+
+
+// GOOGLE OAUTH LOGIC //
 
 //Handles the redirection to Googles OAuth server
 exports.redirectToGoogle = (req, res) => {
@@ -111,7 +114,32 @@ exports.googleCallback = (req, res, next) => {
     if (err || !user ) {
       return res.redirect(`http://localhost:3200/error?message=${encodeURIComponent(err.message)}`);
     }
-      // Redirect to a success page or dashboard as needed
-  res.redirect('http://localhost:5173/success');
-})(req, res);
+// Generate JWT token after successful Google authentication     
+    const token = jwt.sign ({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  })(req, res);
 };
+
+
+
+// // FACEBOOK OAUTH
+
+// // Handles redirect to FB OAuth Server 
+// exports.facebookAuth = passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
+//   passport.authenticate('facebook', { scope: ["email"]})(req, res);
+// };
+// // Handles the callback from Facebook OAuth 
+// exports.facebookCallback = (req, res, next) => {
+//   passport.authenticate('facebook', (err, user, info) => {
+//     if (err || !user) {
+//       return res.resdirect(`http://localhost:3200/error?message=${encodeURIComponent(err.message)}`);
+//     }
+// // Generate JWT token after successful Facebook authentication 
+//     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn:'1h'});
+//     res.json({ token });
+//   })(req, res, next )
+// };
+
+
+// const token = jwt.sign 
+
+

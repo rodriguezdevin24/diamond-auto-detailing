@@ -16,6 +16,7 @@ router.post('/logout', authController.logout);
 
 // OAuth routes
 
+// GOOGLE 
 router.get('/google', authController.redirectToGoogle);
 
 router.get('/google/callback', authController.googleCallback);

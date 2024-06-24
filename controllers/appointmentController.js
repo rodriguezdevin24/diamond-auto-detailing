@@ -2,6 +2,7 @@
 
 const Appointment = require("../models/Appointment");
 const TimeSlot = require("../models/TimeSlot");
+const emailService = require("../services/emailService")
 
 
 //Create a new appointment
@@ -19,7 +20,11 @@ exports.createAppointment = async (req, res) => {
 
 
     const appointment = new Appointment({...appointmentDetails, timeSlot: timeSlotId});
+    
+    //Send an email notifcation
+    await emailService.sendEmail('newAppointment', appointment)
     await appointment.save();
+
     res.status(201).json(appointment);
 
   } catch (error) {
@@ -68,6 +73,10 @@ exports.updateAppointment = async (req, res) => {
         const appointmentId = req.params.id;
         const updatedInfo = req.body;
         const updatedAppointment = await Appointment.findByIdAndUpdate (appointmentId, updatedInfo, {new: true});
+
+        //Send an email notification for status update 
+        await emailService.sendEmail('statusUpdate', updatedAppointment)
+
         res.status(200).json(updatedAppointment);
     } catch (error) {
         res.status(400).json({ message: "Error updating appointment"});
@@ -81,11 +90,18 @@ exports.deleteAppointment = async (req, res ) => {
     try { 
         const appointmentId = req.params.id
         const deletedAppointment = await Appointment.findByIdAndDelete(appointmentId);
-        if (!deletedAppointment) {
-            res.status(404).json({ message: "Appointment not found"});
+
+        if (deletedAppointment) {
+          await emailService.sendEmail('cancellation', deletedAppointment)
+          res.status(200).json({ message: "Appointment successfully deleted"})
+        } else {
+          res.status(404).json({ message: "Appointment not found"});
         }
-        res.status(200).json({ message: "Appointment successfully deleted"})
+       
     } catch (error) {
         res.status(500).json({ message: "Error deleting appointment", error: error.message})
     }
 };
+
+
+
