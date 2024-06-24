@@ -2,6 +2,7 @@
 
 const TimeSlot = require('../models/TimeSlot');
 const generateTimeSlotsForWeek = require('../services/timeSlotGenerator');
+const Appointment = require('../models/Appointment')
 
 
 // Create slots for a week 
@@ -11,7 +12,7 @@ exports.createWeeklyTimeSlots = async (req, res) => {
         const timeSlots = generateTimeSlotsForWeek(new Date(startDate));
        
         await TimeSlot.insertMany(timeSlots);
-        res.status(201).json({ message: 'Weekly Time Slots created succesfully' });
+        res.status(201).json({ message: 'Weekly time slots created succesfully' });
 
 
     } catch (error) {
@@ -85,6 +86,7 @@ exports.updateTimeSlot = async (req, res) => {
 
 exports.deleteTimeSlot = async (req, res) => {
     try { 
+        const { id } = req.params;
         const deletedTimeSlot = await TimeSlot.findByIdAndDelete(id);
         if (!deletedTimeSlot) {
             return res.status(404).json({ message: "Time slot not found", error: error.message});
@@ -95,8 +97,18 @@ exports.deleteTimeSlot = async (req, res) => {
     }
 }
 
-// Logic for booking a time slot!!!!
 
+//Delete ALL time slots from DB 
+exports.deleteAllSlots = async (req, res) => {
+    try {
+        await TimeSlot.deleteMany({});
+        res.status(200).json({ message: 'All time slots deleted succesfully'})
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting all time slots', error: error.message });
+    }
+}
+
+// Logic for booking a time slot!!!!
 exports.bookTimeSlot = async (req, res) => {
     const { startTime, duration, userId, packageId } = req.body;
 
@@ -106,7 +118,7 @@ exports.bookTimeSlot = async (req, res) => {
         prospectiveEndTime.setHours(prospectiveEndTime.getHours() + duration);
         const overlappingSlot = await TimeSlot.findOne({ 
             $or: [
-                { startTime: { $lt: prospectveEndTime }, endTime: { $gt: startTime} },
+                { startTime: { $lt: prospectiveEndTime }, endTime: { $gt: startTime} },
                 { startTime: { $eq: startTime } }
             ], 
             isBooked: true

@@ -6,7 +6,10 @@ const timeSlotController = require('../controllers/timeSlotController');
 
 
 //Route for creating time slots for the week 
-router.post('/create-slot', timeSlotController.createWeeklyTimeSlots);
+router.post('/create-weekly-slots', timeSlotController.createWeeklyTimeSlots);
+
+//Route for booking a time slot 
+router.post('/new', timeSlotController.bookTimeSlot);
 
 //Route for getting all time slots
 router.get('/', timeSlotController.listTimeSlots);//
@@ -23,9 +26,10 @@ router.get('/:id', timeSlotController.getTimeSlotById);
 //Route for updating a time slot by ID
 router.put('/:id', timeSlotController.updateTimeSlot);
 
+//Route for deleting ALL time slots 
+router.delete('/delete-all', timeSlotController.deleteAllSlots)
+
 //Route for deleting a time slot by ID
 router.delete('/:id', timeSlotController.deleteTimeSlot)
 
-//Route for booking a time slot 
-router.post('/new', timeSlotController.bookTimeSlot);
 module.exports = router;
