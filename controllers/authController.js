@@ -121,25 +121,25 @@ exports.googleCallback = (req, res, next) => {
 
 
 
-// FACEBOOK OAUTH
+// // FACEBOOK OAUTH
 
-// Handles redirect to FB OAuth Server 
-exports.facebookAuth = passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
-  passport.authenticate('facebook', { scope: ["email"]})(req, res);
-};
-// Handles the callback from Facebook OAuth 
-exports.facebookCallback = (req, res, next) => {
-  passport.authenticate('facebook', (err, user, info) => {
-    if (err || !user) {
-      return res.resdirect(`http://localhost:3200/error?message=${encodeURIComponent(err.message)}`);
-    }
-// Generate JWT token after successful Facebook authentication 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn:'1h'});
-    res.json({ token });
-  })(req, res, next )
-};
+// // Handles redirect to FB OAuth Server 
+// exports.facebookAuth = passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
+//   passport.authenticate('facebook', { scope: ["email"]})(req, res);
+// };
+// // Handles the callback from Facebook OAuth 
+// exports.facebookCallback = (req, res, next) => {
+//   passport.authenticate('facebook', (err, user, info) => {
+//     if (err || !user) {
+//       return res.resdirect(`http://localhost:3200/error?message=${encodeURIComponent(err.message)}`);
+//     }
+// // Generate JWT token after successful Facebook authentication 
+//     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn:'1h'});
+//     res.json({ token });
+//   })(req, res, next )
+// };
 
 
-const token = jwt.sign 
+// const token = jwt.sign 
 
 
