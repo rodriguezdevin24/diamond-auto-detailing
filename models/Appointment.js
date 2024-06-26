@@ -9,6 +9,24 @@ const appointmentSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    //ADD EMAIL HERE AND ADDS CONDITIONAL IF THEYRE NOT LOGGED IN AND HAVE AN ACCOUNT IT CREATES A NEW ACCOUNT FOR THEM 
+
+    phoneNumber: {
+        type: String,
+        required: true
+    },
+    addressLine1: {
+        type: String, 
+        required: true
+    },
+    addressLine2: {
+        type: String, 
+        required: false
+    },
+    zipCode: {
+        type: Number,
+        required: true
+    },
     package: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Package',
@@ -35,7 +53,8 @@ const appointmentSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    }
+    },
+
 
 });
 
