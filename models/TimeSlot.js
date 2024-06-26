@@ -18,11 +18,11 @@ const timeSlotSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: [ 'pending', 'confirmed', "available"],
+        enum: [ 'pending', 'confirmed', "available", "cancelled"],
         default: 'available'
     },
     appointment: { 
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Appointment',
         default: null
     }

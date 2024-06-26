@@ -48,6 +48,7 @@ exports.getAllAppointments = async (req, res) => {
   }
 };
 
+
 // Get appointment by ID
 
 exports.getAppointment = async (req, res) => {
@@ -103,5 +104,18 @@ exports.deleteAppointment = async (req, res ) => {
     }
 };
 
+
+//Delete ALL appointments from DB
+
+exports.deleteAllAppointments = async (req, res) => {
+  try {
+    await Appointment.deleteMany({});
+    res.status(200).json({ message: "All appointments deleted succesfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting all appointments", error: error.message });
+  }
+};
 
 

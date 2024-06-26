@@ -5,8 +5,6 @@ const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 
 
-
-
 //create User
 
 exports.createUser = async (req, res) => {
@@ -54,19 +52,23 @@ exports.getUser = async (req, res) => {
 
 exports.updateUser =  async (req, res) => {
     const  { id } = req.params;
-    let { password, ...updateData } = req.body;
+    let { oldPassword, newPassword, ...updateData } = req.body;
     
     try {
-        if (password) {
-            const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-            password = await bcrypt.hash(password, salt);
-            updateData.password = password;
-        }
-
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: 'User not found'})
         }
+        if (oldPassword && newPassword) {
+            const isMatch = await bcrypt.compare(oldPassword, user.password);
+            if (!isMatch) {
+                return res.status(401).json({ message: "Old password is incorrect"})
+            }
+            const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+            newPassword = await bcrypt.hash(newPassword, salt);
+            updateData.password = newPassword;
+        }
+
 
         Object.assign(user, updateData);
         await user.save(); //trigges pre save middleware for hashing
@@ -77,6 +79,9 @@ exports.updateUser =  async (req, res) => {
     res.status(500).json({ message: "Error updating user", error: error.message });
 }
 };
+
+
+
 
 //Delete user 
 
